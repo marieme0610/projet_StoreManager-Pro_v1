@@ -30,3 +30,34 @@ J’ai également rencontré une difficulté lors de la conception du diagramme 
   - **Difficultés / Obstacles** 
   j'ai rencontré quelques difficultés avec SQL, notamment pour comprendre le lien entre le fichier schema_sqlite.sql et la base de données erp.db.
   J'ai finalement compris que schema_sqlite.sql contient les instructions permettant de créer la structure de la base de données, tandis que erp.db est la base de données SQLite réelle contenant les tables et les données.
+
+
+### Step 1.3 : Singleton Database & Fallback Automatique
+
+  - **Difficultés / Obstacles** 
+J'ai eu des difficultés à comprendre le fonctionnement du Singleton.
+J'ai également eu des difficultés à comprendre comment utiliser erp.db comme solution de secours.
+J'ai rencontré une erreur lors du test car je faisais appel à une méthode de PDO directement sur Database.
+Mais finalement j'ai pue reussir a etablire la connexion que sa soit avec postgres ou sqlite
+
+
+#### 📌 Step 2.1 (09h00 - 11h00) : Entités POO Pure
+
+- **Livrables réalisés** :
+Création des classes Entités correspondant aux différentes tables de la base de données:
+    Role -> roles
+    Utilisateur -> utilisateurs
+    Produit -> produits
+    Client -> clients
+    Fournisseur -> fournisseurs
+    ModePaiement -> modes_paiement
+    Commande -> commandes
+    LigneCommande -> lignes_commandes
+    Dette -> dettes
+    PaiementDette -> paiements_dettes
+    StatutAppro -> statuts_appro
+    Approvisionnement -> approvisionnements
+    LigneAppro -> lignes_appros
+    
+  - **Difficultés / Obstacles** 
+J’ai eu des difficultés à comprendre l’utilité des méthodes dans les classes, puisque les requêtes SQL permettent déjà de récupérer les données. J’ai ensuite compris que les méthodes permettent de manipuler ou d’accéder facilement à des informations spécifiques d’un objet déjà récupéré, sans avoir besoin de retourner systématiquement à la base de données.

@@ -20,8 +20,8 @@ CREATE TABLE produits (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     libelle TEXT NOT NULL,
     prix_vente REAL NOT NULL CHECK (prix_vente >= 0),
-    stock_actuel INTEGER NOT NULL DEFAULT 0 CHECK (stock_actuel >= 0),
-    seuil_alerte INTEGER NOT NULL DEFAULT 5 CHECK (seuil_alerte >= 0)
+    stock INTEGER NOT NULL DEFAULT 0 CHECK (stock_actuel >= 0),
+    seuil INTEGER NOT NULL DEFAULT 5 CHECK (seuil_alerte >= 0)
 );
 
 CREATE TABLE clients (
