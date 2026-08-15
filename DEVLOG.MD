@@ -58,6 +58,20 @@ Création des classes Entités correspondant aux différentes tables de la base 
     StatutAppro -> statuts_appro
     Approvisionnement -> approvisionnements
     LigneAppro -> lignes_appros
-    
+
   - **Difficultés / Obstacles** 
 J’ai eu des difficultés à comprendre l’utilité des méthodes dans les classes, puisque les requêtes SQL permettent déjà de récupérer les données. J’ai ensuite compris que les méthodes permettent de manipuler ou d’accéder facilement à des informations spécifiques d’un objet déjà récupéré, sans avoir besoin de retourner systématiquement à la base de données.
+
+
+## Modification de la base de donnee 
+
+-J'ai regarder a nous mes classe et l'ecran j'ai remarque que il avais des collones qui n'etait pas necessaire comme la datte d'echeance egalement j'ai changer le statut par defaut que j'avais mis en cours car sur l'ecran c'etait SOLDE ou NON SOLDE.
+J'avais egalement migres l'id de l'utilsateur dans le paimement_dette ce qui ne sert a rien.
+J'ai egalement changer le type des date je les avais mis en TIMESTAMP que j'ai modifier en type DATE .
+Du coup vue que j'avais deja creer mes entites de classe j'etais obligé de revenir sur les entites.
+
+-J'ai egalemnt changer le nom du fichier qui tester ma connexion a la base je l"avais appeler index mais vu que c'etait pour tester c'est plus adaquate de l'appeler testConnexion.
+
+-J'ai egalement modifier le nom du dossier qui contenais mes schema de base je l'avais donnee comme nom database je les changer en schemaSql
+
+-Dans le fichier src/Core/Database j'ai couper les fonctionnes de base de donnees que j'avais mis dedans je l'avais fait her mais j'avais pas bien compris raison pour la quelle j'avais mis toutes mes fonctions qui on un rapport a avec la base de donnee puis quand je me suis mieux documenter j'ai appris que ce fichier etait juste pour etablir la connexion et le faire en mode singleton c'est a dire on creer une seul fois la connexion pour durant l'execussion du programme

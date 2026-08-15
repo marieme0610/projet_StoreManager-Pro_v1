@@ -8,22 +8,43 @@ class Fournisseur
     private string $tel;
     private ?string $adresse;
 
+    public function __construct(
+        ?int $id = null,
+        string $nom = '',
+        ?string $email = null,
+        string $tel = '',
+        ?string $adresse = null
+    ) {
+        $this->id = $id;
+        $this->nom = $nom;
+        $this->email = $email;
+        $this->tel = $tel;
+        $this->adresse = $adresse;
+    }
 
-    public function getId(): ?int {
-         return $this->id; 
-         }
-    public function getNom(): string {
-         return $this->nom; 
-         }
-    public function getEmail(): ?string {
-         return $this->email; 
-         }
-    public function getTel(): string {
-         return $this->tel; 
-         }
-    public function getAdresse(): ?string {
-         return $this->adresse; 
-         }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    
+    public function getNom(): string
+    {
+        return $this->nom;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function getTel(): string
+    {
+        return $this->tel;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
 }

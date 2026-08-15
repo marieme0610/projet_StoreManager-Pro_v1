@@ -3,7 +3,7 @@
 class Database
 {
     private static ?Database $instance = null;
-    private \PDO $pdo;
+    private PDO $pdo;
 
     private function __construct()
     {
@@ -11,7 +11,7 @@ class Database
             
             $dsn = "pgsql:host=localhost;port=5432;dbname=erppostgres";
 
-            $this->pdo = new \PDO(
+            $this->pdo = new PDO(
                 $dsn,
                 "postgres",
                 1234
@@ -21,7 +21,7 @@ class Database
 
             $sqlitePath = dirname(__DIR__, 2) . "/database/erp.db";
 
-            $this->pdo = new \PDO(
+            $this->pdo = new PDO(
                 "sqlite:" . $sqlitePath
             );
 
@@ -29,13 +29,13 @@ class Database
         }
 
         $this->pdo->setAttribute(
-            \PDO::ATTR_ERRMODE,
-            \PDO::ERRMODE_EXCEPTION
+            PDO::ATTR_ERRMODE,
+            PDO::ERRMODE_EXCEPTION
         );
 
         $this->pdo->setAttribute(
-            \PDO::ATTR_DEFAULT_FETCH_MODE,
-            \PDO::FETCH_ASSOC
+            PDO::ATTR_DEFAULT_FETCH_MODE,
+            PDO::FETCH_ASSOC
         );
     }
 
@@ -48,50 +48,10 @@ class Database
         return self::$instance;
     }
 
-    public function getConnexion(): \PDO
+    public function getConnexion(): PDO
     {
         return $this->pdo;
     }
 
-    public function query(string $sql, bool $single = true): array
-    {
-        $result = $this->pdo->query($sql);
-
-        return $single
-            ? $result->fetch()
-            : $result->fetchAll();
-    }
-
-    public function prepare(string $sql, array $datas): \PDOStatement
-    {
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($datas);
-
-        return $stmt;
-    }
-
-    public function executeQuery(
-        string $sql,
-        array $datas,
-        bool $single = true
-    ): array {
-        $stmt = $this->prepare($sql, $datas);
-
-        return $single
-            ? $stmt->fetch()
-            : $stmt->fetchAll();
-    }
-
-    public function executeUpdate(string $sql, array $datas): int
-    {
-        $stmt = $this->prepare($sql, $datas);
-
-        return str_starts_with(strtoupper(trim($sql)), 'INSERT')
-            ? (int) $this->pdo->lastInsertId()
-            : $stmt->rowCount();
-    }
-
-    private function __clone()
-    {
-    }
+   
 }
