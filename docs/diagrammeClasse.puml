@@ -1,0 +1,112 @@
+@startuml DiagrammeClasse
+
+class Role {
+    - id
+    - nom
+}
+
+class Utilisateur {
+    - id
+    - nomComplet
+    - email
+    - mot_passe
+}
+
+class Produit {
+    - id
+    - libelle
+    - prixVente
+    - stock
+    - seuil
+}
+
+class Client {
+    - id
+    - nom
+    - prenom
+    - email
+    - tel
+    - limiteCredit
+}
+
+class Fournisseur {
+    - id
+    - nomComplet
+    - email
+    - tel
+}
+
+class Commande {
+    - id
+    - datCommande
+    - montantInitial
+    - avance
+    - estCredit
+}
+
+class LigneCommande {
+    - id
+    - quantite
+    - prixUnitaire
+}
+
+class ModePaiement {
+    - id
+    - libelle
+}
+
+class Reglement {
+    - id
+    - dateReglement
+    - montant
+}
+
+class Dette {
+    - id
+    - montantInitial
+    - montantRestant
+    - statut
+    - dateEcheance
+}
+
+class StatutAppro {
+    - id
+    - nom
+}
+
+class Appro {
+    - id
+    - refBl
+    - dateAppro
+    - montantTotal
+}
+
+class LigneAppro {
+    - id
+    - qteAppro
+    - qteRecu
+    - prixReel
+}
+
+
+Utilisateur "0..*" --> "1" Role
+
+Client "1" --> "0..*" Commande
+Commande "1" --> "1..*" LigneCommande
+Produit "1" --> "0..*" LigneCommande
+
+Commande "0..*" --> "1" ModePaiement
+Commande "0..*" --> "1" Utilisateur
+
+Commande "1" --> "0..1" Dette
+Dette "1" --> "0..*" Reglement
+Reglement "0..*" --> "1" ModePaiement
+Reglement "0..*" --> "1" Utilisateur
+
+Appro "0..*" --> "1" Fournisseur
+Appro "1" --> "1..*" LigneAppro
+Produit "1" --> "0..*" LigneAppro
+StatutAppro "1" --> "0..*" Appro
+Appro "0..*" --> "1" Utilisateur
+
+@enduml
