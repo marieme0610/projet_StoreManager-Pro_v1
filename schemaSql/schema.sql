@@ -151,3 +151,52 @@ USING date_paiement::DATE;
 ALTER TABLE approvisionnements
 ALTER COLUMN date_appro TYPE DATE
 USING date_appro::DATE;
+
+
+-- saveProduit
+INSERT INTO produits(libelle,prix_vente,stock,seuil)
+VALUES(:libelle,:prix_vente,:stock,:seuil);
+
+-- saveClient
+INSERT INTO clients(nom,prenom,email,tel,limite_credit)
+VALUES(:nom,:prenom,:email,:tel,:limite_credit);
+
+-- saveFournisseur
+INSERT INTO fournisseurs(nom,email,tel,adresse)
+VALUES(:nom,:email,:tel,:adresse);
+
+ 
+--lister article 
+
+SELECT p.libelle,p.prix_vente,p.stock
+FROM produits p ;
+
+
+--lister clients 
+
+SELECT * FROM clients ;
+
+
+--lister fournisseurs 
+
+SELECT f.nom,f.tel,f.adresse 
+FROM fournisseurs f;
+
+--totalValeurStock
+
+SELECT SUM(
+    COALESCE(p.prix_vente, 0) * COALESCE(p.stock, 0)
+) AS totalValeurStock
+FROM produits p;
+
+--nbrProduit
+
+SELECT COUNT(p.id) AS nbrproduit FROM produits p;
+
+
+--nbrClient
+
+SELECT COUNT(c.id) AS nbrclient FROM clients c;
+
+
+SELECT * FROM produits WHERE stock <= seuil ;
