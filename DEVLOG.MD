@@ -75,3 +75,17 @@ Du coup vue que j'avais deja creer mes entites de classe j'etais obligé de reve
 -J'ai egalement modifier le nom du dossier qui contenais mes schema de base je l'avais donnee comme nom database je les changer en schemaSql
 
 -Dans le fichier src/Core/Database j'ai couper les fonctionnes de base de donnees que j'avais mis dedans je l'avais fait her mais j'avais pas bien compris raison pour la quelle j'avais mis toutes mes fonctions qui on un rapport a avec la base de donnee puis quand je me suis mieux documenter j'ai appris que ce fichier etait juste pour etablir la connexion et le faire en mode singleton c'est a dire on creer une seul fois la connexion pour durant l'execussion du programme
+
+#### 📌 Step 2.2 (11h00 - 13h00) : Repositories & SQL Sécurisé
+
+- **Livrables réalisés** : 
+J'ai pus ecrire les classes des repository Produit client et fournisseur
+
+  - **Difficultés / Obstacles** 
+J'ai rencontrer beaucoup de difficulté a travers comment appeller l'instance de la base de donnee que j'avais creer mais aussi comment gerer les fonctions de la database car je les avez elever dans le src/Core/Database.php mais finalement je les remis car si je le remat c'est beaucoup plus simple 
+J'ai rencontrer des obstacle a travers le conversions des arrays en object car j'avais mis en premier lieu FETCH_CLASS mais apres je m'etait rendu compte que vous aviez dit que vous n'aimez pas le fetch_class finalement j'ai decider de creer un object du type que je voulais a partir du tableau associatif que m'a renvoie la base donnee apres pour le recuperer j'ai arcuru le tableau en appelant ma fonction qui me creer les elements en mon object voulu 
+
+#### 📌 Step 2.3 (14h00 - 17h00) : Service Métier Vente POS & Transaction SQL
+
+  - **Difficultés / Obstacles** 
+D'abord le premier probleme que j'ai eu c'est ce que je pensais que une transaction est seuelement dans les Repository je voyez mal l'utilite de service car je eme disais que toute les information la requette l'amene avec elle 

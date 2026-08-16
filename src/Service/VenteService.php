@@ -1,17 +1,8 @@
 <?php
 
-
-/**
- * VenteService
- *
- * Service métier chargé de valider une vente au comptoir (POS).
- * Responsabilités :
- *  - Vérifier la disponibilité du stock pour chaque ligne du panier
- *  - Calculer le total et le reste à payer
- *  - Appliquer le contrôle de la limite de crédit client (si vente à crédit)
- *  - Décrémenter le stock, créer la commande, et créer/mettre à jour la dette
- *    le tout dans UNE SEULE transaction PDO (atomicité garantie)
- */
+require_once(dirname(__DIR__)."/Model/Repository/ClientRepository.php");
+require_once(dirname(__DIR__)."/Model/Repository/Fournisseur.php");
+require_once(dirname(__DIR__)."/Model/Repository/ProduitRepository.php");
 class VenteService
 {
     private PDO $pdo;
@@ -26,7 +17,6 @@ class VenteService
         CommandeRepository $commandeRepository,
         DetteRepository $detteRepository
     ) {
-        // Le Singleton Database (Step 1.3) nous fournit toujours la même connexion PDO
         
         $this->pdo = Database::getInstance()->getConnection();
         $this->produitRepository = $produitRepository;
