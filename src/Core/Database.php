@@ -40,14 +40,12 @@ class Database
         return $this->pdo;
     }
 
-    // Exécute un SELECT et retourne un tableau ou une seule ligne (tableau associatif)
     public function query(string $sql, bool $single = true): array|false
     {
         $stmt = $this->pdo->query($sql);
         return $single ? $stmt->fetch() : $stmt->fetchAll();
     }
 
-    // Préparation et exécution avec paramètres
     public function prepare(string $sql, array $datas): PDOStatement
     {
         $stmt = $this->pdo->prepare($sql);
@@ -55,14 +53,14 @@ class Database
         return $stmt;
     }
 
-    // Requête SELECT préparée
+
     public function executeQuery(string $sql, array $datas, bool $single = true): array|false
     {
         $stmt = $this->prepare($sql, $datas);
         return $single ? $stmt->fetch() : $stmt->fetchAll();
     }
 
-    // Pour INSERT, UPDATE, DELETE
+
     public function executeUpdate(string $sql, array $datas): int
     {
         $stmt = $this->prepare($sql, $datas);

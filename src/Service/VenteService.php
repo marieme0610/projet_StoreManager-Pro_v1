@@ -1,169 +1,139 @@
 <?php
 
 require_once(dirname(__DIR__)."/Model/Repository/ClientRepository.php");
-require_once(dirname(__DIR__)."/Model/Repository/Fournisseur.php");
+require_once(dirname(__DIR__)."/Model/Repository/FournisseurRepository.php");
 require_once(dirname(__DIR__)."/Model/Repository/ProduitRepository.php");
-class VenteService
-{
-    private PDO $pdo;
-    private ProduitRepository $produitRepository;
+
+
+class essaie{
+
+    private Database $db;
     private ClientRepository $clientRepository;
+    private FournisseurRepository $fournisseurRepository;
+    private ProduitRepository $produitRepository;
     private CommandeRepository $commandeRepository;
     private DetteRepository $detteRepository;
+    private LigneCommandeRepository $ligneCommandeRepository;
 
     public function __construct(
-        ProduitRepository $produitRepository,
         ClientRepository $clientRepository,
+        FournisseurRepository $fournisseurRepository,
+        ProduitRepository $produitRepository,
         CommandeRepository $commandeRepository,
-        DetteRepository $detteRepository
-    ) {
+        DetteRepository $detteRepository,
+        LigneCommandeRepository $ligneCommandeRepository,
         
-        $this->pdo = Database::getInstance()->getConnection();
+    ){
+        $this->db = Database::getInstance();
         $this->produitRepository = $produitRepository;
         $this->clientRepository = $clientRepository;
+        $this->fournisseurRepository = $fournisseurRepository;
         $this->commandeRepository = $commandeRepository;
         $this->detteRepository = $detteRepository;
+        $this->ligneCommandeRepository = $ligneCommandeRepository;
+       
+    }
+    public function enregistrerVente(
+            int $client_id,float $limit_credit,
+             array $panier, float $montantTotal,
+             int $mode_paiement_id,float $avance,int $utilisateur_id
+    )
+
+    
+   {
+
+    $errors = [];
+
+
+    if(empty($panier)){
+        $errors['panier_vide'] = "Vous ne pouvais pas enregistrer un panier vide";
+    }
+    if($avance < 0){
+       $errors['avance_invalide'] =  "Versement invalide";
     }
 
 
+    $montantRestant = $montantTotal - $avance;
+    if ($montantRestant < 0) {
+        $montantRestant = 0.0; // le client a versé plus que le total, pas d'erreur bloquante
+    }
 
-    public function validerVente(array $panier, ?int $clientId, float $montantVerse, string $modePaiement = 'ESPECES'): array
-    {
-        if (empty($panier)) {
-            throw new InvalidArgumentException("Le panier ne peut pas être vide.");
+    if ($montantRestant > 0) {
+        $sommeDette = $this->detteRepository->getAlldetteByIdClient($client_id);
+        $nouvelleSommeDette = $sommeDette + $montantRestant;
+
+
+
+    $est_credit = true;
+
+
+        if($nouvelleSommeDette > $limit_credit){
+            $errors['limit_atteint'] =  "Vous avez atteint votre limite de credit";
+            $est_credit = false;
+
         }
-        if ($montantVerse < 0) {
-            throw new InvalidArgumentException("Le montant versé ne peut pas être négatif.");
+
+        foreach ($panier as $ligne) {
+        $produit = $this->produitRepository->getStockProduitId($ligne->getProduitId());
+
+        if ($produit === null) {
+            $errors['produit_introuvable'] = "Produit #{$ligne->getProduitId()} introuvable.";
+            continue;
         }
+        if ($ligne->getQuantite() > $produit->getStock()) {
+            $errors['stock_insuffisant'] = "Stock insuffisant pour le produit #{$ligne->getProduitId()} (reste {$produit->getStock()}).";
+        }
+    }
 
-        $this->pdo->beginTransaction();
+    if (!empty($errors)) {
+        throw new InvalidArgumentException(implode(' / ', $errors));
+    }
 
-        try {
-           
-            $lignesValidees = [];
-            $totalVente = 0.0;
+    $est_credit = $montantRestant > 0;  
 
-            foreach ($panier as $ligne) {
-                $produitId = (int) $ligne['id'];
-                $quantite  = (int) $ligne['qty'];
+    $pdo = $this->db->getConnexion();
 
-                if ($quantite <= 0) {
-                    throw new InvalidArgumentException("Quantité invalide pour le produit #$produitId.");
-                }
+    $pdo->beginTransaction();
 
-                $produit = $this->produitRepository->findById($produitId);
-                if ($produit === null) {
-                    throw new RuntimeException("Produit #$produitId introuvable.");
-                }
+   try {
+        
+        $commande_id = $this->commandeRepository->saveCommande(
+        $montantTotal,$avance,$est_credit,$client_id,$mode_paiement_id,
+        $utilisateur_id
+    );
 
-                if ($produit->getStock() < $quantite) {
-                    throw new RuntimeException(
-                        "Stock insuffisant pour \"{$produit->getNom()}\" (disponible : {$produit->getStock()}, demandé : $quantite)."
-                    );
-                }
+        $this->ligneCommandeRepository->saveLigne(
+            $panier,$commande_id
+        );
+        
+      
 
-                // calculer sous total
+            if($avance < $montantTotal) {
 
-                $sousTotal = $produit->getPrixVente() * $quantite;
-                $totalVente += $sousTotal;
+            $detteLastId = $this->detteRepository->saveDette(
+                $montantTotal,$montantRestant,$commande_id
+            );
 
-                $lignesValidees[] = [
-                    'produit'    => $produit,
-                    'quantite'   => $quantite,
-                    'prix_unit'  => $produit->getPrixVente(),
-                    'sous_total' => $sousTotal,
-                ];
-            }
+            } 
 
-           
-            $resteAPayer = $totalVente - $montantVerse;
-            if ($resteAPayer < 0) {
-                $resteAPayer = 0.0;
-            }
-
-            $client = null;
-            if ($clientId !== null) {
-                $client = $this->clientRepository->findById($clientId);
-                if ($client === null) {
-                    throw new RuntimeException("Client #$clientId introuvable.");
-                }
-            }
-
-            if ($resteAPayer > 0) {
-                if ($client === null) {
-                    throw new RuntimeException("Une vente à crédit nécessite un client identifié.");
-                }
-
-                $detteActuelle = $this->detteRepository->getTotalDettesNonSoldees($client->getId());
-                $nouvelEncours = $detteActuelle + $resteAPayer;
-
-                if ($nouvelEncours > $client->getLimiteCredit()) {
-                    throw new RuntimeException(
-                        "Limite de crédit dépassée pour {$client->getNom()} : " .
-                        "encours actuel {$detteActuelle} + nouveau crédit {$resteAPayer} " .
-                        "> limite autorisée {$client->getLimiteCredit()}."
-                    );
-                }
-            }
-
-         
-            foreach ($lignesValidees as $ligneValidee) {
-                $produit = $ligneValidee['produit'];
-                $nouveauStock = $produit->getStock() - $ligneValidee['quantite'];
-
-                $ok = $this->produitRepository->decrementerStock(
-                    $produit->getId(),
-                    $ligneValidee['quantite']
-                );
-
-                if (!$ok) {
-                    throw new RuntimeException(
-                        "Conflit de stock détecté pour \"{$produit->getNom()}\" pendant la transaction."
-                    );
-                }
-            }
-
-           
-            $commandeId = $this->commandeRepository->create([
-                'client_id'      => $client?->getId(),
-                'total'          => $totalVente,
-                'montant_verse'  => $montantVerse,
-                'reste_a_payer'  => $resteAPayer,
-                'mode_paiement'  => $modePaiement,
-                'statut'         => $resteAPayer > 0 ? 'A CREDIT' : 'REGLE',
-            ]);
-
-            foreach ($lignesValidees as $ligneValidee) {
-                $this->commandeRepository->addLigne($commandeId, [
-                    'produit_id'    => $ligneValidee['produit']->getId(),
-                    'quantite'      => $ligneValidee['quantite'],
-                    'prix_unitaire' => $ligneValidee['prix_unit'],
-                    'sous_total'    => $ligneValidee['sous_total'],
-                ]);
-            }
-
-          
-            if ($resteAPayer > 0) {
-                $this->detteRepository->create([
-                    'client_id'   => $client->getId(),
-                    'commande_id' => $commandeId,
-                    'montant'     => $resteAPayer,
-                    'statut'      => 'NON_SOLDEE',
-                ]);
-            }
-
-            $this->pdo->commit();
-
-            return [
-                'commande_id'   => $commandeId,
-                'total'         => $totalVente,
-                'reste_a_payer' => $resteAPayer,
-            ];
-
-        } catch (Exception $e) {
+            $this->produitRepository->updateStockProduit($panier);
             
-            $this->pdo->rollBack();
-            throw $e;
-        }
+
+        $pdo->commit();
+        return true;
+   } 
+   catch (\Throwable $th) {
+    if($pdo->inTransaction()){
+        $pdo->rollback();
     }
-}
+     throw $th;
+    return false;
+   }  
+            
+    
+    
+
+
+    }
+   }
+   }

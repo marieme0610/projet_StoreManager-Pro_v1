@@ -89,3 +89,18 @@ J'ai rencontrer des obstacle a travers le conversions des arrays en object car j
 
   - **Difficultés / Obstacles** 
 D'abord le premier probleme que j'ai eu c'est ce que je pensais que une transaction est seuelement dans les Repository je voyez mal l'utilite de service car je eme disais que toute les information la requette l'amene avec elle 
+
+
+
+
+#### 📌 Step 2.3 Refactoring
+
+
+j'ai fait la validation du panier et du versement, calcul du reste à payer, contrôle de la limite de crédit du client (somme des dettes existantes + nouveau reste ≤ limite autorisée), vérification du stock disponible produit par produit, puis écriture en base (commande, lignes de commande, dette éventuelle, décrémentation du stock) sous une transaction PDO (beginTransaction/commit/rollback).
+
+  - **Difficultés / Obstacles** 
+
+j'ai encore rencontrer beaucoup de bug mais j'en est beaucoup appris egalemnt quelque obstacle :confusion initiale entre logique métier (Service) et accès aux données (Repository) : mes premières versions faisaient du SQL directement dans le Service, ce qui allait à l'encontre de l'architecture en couches demandée. J'ai dû extraire tout le SQL vers ProduitRepository, ClientRepository, CommandeRepository, DetteRepository, LigneCommandeRepository.
+Plusieurs bugs d'inattention lors de la réécriture : variables PHP oubliées sans $ (client_id au lieu de $client_id), mauvaise variable SQL réutilisée par copier-coller ($sql au lieu de $sql1/$sql2), appel d'une méthode de Repository sans passer par l'attribut injecté ($this->getStockProduitId() au lieu de $this->produitRepository->getStockProduitId()).
+Erreur de validation qui ne bloquait pas l'exécution : je remplissais un tableau $errors mais je ne testais jamais son contenu avant de continuer.
+j'ai appri  l'injection de dépendances : je créais mes Repositories directement avec new à l'intérieur du Service, plutôt que de les recevoir en paramètre du constructeur — ce qui rendait le Service rigide et impossible à faire évoluer sans le modifier.

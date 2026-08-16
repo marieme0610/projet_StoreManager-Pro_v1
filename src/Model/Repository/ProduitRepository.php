@@ -78,4 +78,26 @@ class ProduitRepository
         }
         return $produitEnRupture;
     }
+
+    public function getStockProduitId(int $produit_id):?Produit{
+
+    $sql = "SELECT * FROM produits  WHERE id = :produit_id";
+    $produit = $this->db->executeQuery( $sql, ['produit_id'=>$produit_id]);
+    $produitObjct = $this->convertEnProduit($produit);
+    return $produitObjct;
+
+   }
+
+   public function updateStockProduit(array $panier){
+    $sql3 = "UPDATE  produits SET stock = stock - :quantite WHERE id = :id";
+
+            foreach ($panier as  $ligne) {
+             $affectitedLigne = $this->db->executeUpdate($sql3, [
+                                'quantite'=>$ligne->getQuantite(),
+                                'id'=>$ligne->getProduit_id()
+                        ]);
+            }
+   }
+
+  
 }
