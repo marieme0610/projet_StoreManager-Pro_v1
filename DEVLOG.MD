@@ -108,3 +108,21 @@ j'ai appri  l'injection de dépendances : je créais mes Repositories directemen
 #### 📌 Step 2.4 (17h00 - 20h00) : Controller POS & Vue Caisse
 
 J'ai implémenté POSController avec ses méthodes show() et store(), ainsi que la vue POS correspondante. J'ai mis en place le routage complet via Router.php et index.php, qui centralise la création de toutes les dépendances et les associe aux bonnes actions du contrôleur.
+
+-------------------------Branche hotfix1---------------------------------------
+
+
+### [lundi - Phase 1] : Conception & BDD Fallback
+- **Heure de réalisation** : 
+- **Ce qui a été fait** : 
+
+**Step 2.1 () : Entités POO Pure
+
+J'ai corriger mes entité en enlevant les attributs id des autres classes que je migré vers les relations je l'avais fait car je pensais que c'etait la meme logique que coté base de donnee la ou les relations son etablie a travers les migrations de clé .
+Aujourd'hi j'ai appris que la logique n'est pas la meme coté POO a la creation des classes ici les relations sont traduits par les objects 
+
+**Step 1.3 () : Singleton Database & Fallback Automatique
+
+Ici j'ai refait ma classe Database en metant toutes les methodes a static pour qu'is soit creer une seule fois et qu'il soit reutilisable par les models sans pour autant que je passe par l'injection des objects la ou je les passer au controller dans l'index ce qui a un incovenient qui est a chaque fois qu'on passe une requette les objects sont creer a nous et vue qu'on remarque que les comportements des objects ne change pas ce qui est valable quand l'heritage entre en jeux maintenant a travers static je peut acceder au methode a travers la classe directement.
+
+
