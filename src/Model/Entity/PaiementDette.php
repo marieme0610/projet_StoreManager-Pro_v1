@@ -2,32 +2,25 @@
 
 class PaiementDette
 {
-    private ?int $id;
-    private ?DateTime $date_paiement;
+    private DateTime $date_paiement;
     private float $montant;
-    private int $dette_id;
-    private int $mode_paiement_id;
+    private Dette $dette;
+    private ModePaiement $mode_paiement;
 
     public function __construct(
-        ?int $id = null,
-        ?string $date_paiement = null,
-        float $montant = 0,
-        int $dette_id = 0,
-        int $mode_paiement_id = 0
+        float $montant,
+        Dette $dette,
+        ModePaiement $modePaiement
     ) {
-        $this->id = $id;
-        $this->date_paiement = $date_paiement;
+        $this->date_paiement = new DateTime();
         $this->montant = $montant;
-        $this->dette_id = $dette_id;
-        $this->mode_paiement_id = $mode_paiement_id;
+        $this->dette = $dette;
+        $this->mode_paiement = $modePaiement;
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
-    public function getDate_paiement(): ?string
+
+    public function getDate_paiement(): DateTime
     {
         return $this->date_paiement;
     }
@@ -37,14 +30,14 @@ class PaiementDette
         return $this->montant;
     }
 
-    public function getDette_id(): int
+    public function getDette(): Dette
     {
-        return $this->dette_id;
+        return $this->dette;
     }
 
-    public function getMode_paiement_id(): int
+    public function getModePaiement(): ModePaiement
     {
-        return $this->mode_paiement_id;
+        return $this->mode_paiement;
     }
 
     

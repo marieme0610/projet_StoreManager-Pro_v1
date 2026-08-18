@@ -4,13 +4,15 @@ class Role
 {
     private ?int $id;
     private string $nom;
+    private array $utilisateurs;
 
     public function __construct(
-        ?int $id = null,
-        string $nom = ''
+        string $nom,
+        ?int $id = null
     ) {
-        $this->id = $id;
         $this->nom = $nom;
+        $this->id = $id;
+        $this->utilisateurs = [];
     }
 
     public function getId(): ?int
@@ -18,9 +20,19 @@ class Role
         return $this->id;
     }
 
-    public function getNom(): string
+     public function getNom(): string
     {
         return $this->nom;
+    }
+
+     public function getUtilisateurs(): array
+    {
+        return $this->utilisateurs;
+    }
+
+    public function addUtilisateur(Utilisateur $utilisateur): void
+    {
+         $this->utilisateurs[]= $utilisateur;
     }
 
 }

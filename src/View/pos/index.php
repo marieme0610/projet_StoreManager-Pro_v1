@@ -1,3 +1,9 @@
+<?php
+$valeurTotalStock = $valeurTotalStock ?? 0;
+$nbrProduit = $nbrProduit ?? 0;
+$nbrClient = $nbrClient ?? 0;
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -1156,34 +1162,19 @@
                         <span>🛒 Nouvelle Vente</span>
                         <span style="font-size: 11px; font-weight: 600; color: var(--text-muted); background: rgba(255,255,255,0.03); padding: 4px 8px; border-radius: 6px;">Terminal POS</span>
                     </div>
-                    <form method="GET" action="#" onsubmit="event.preventDefault(); alert('Action enregistrée (mode démonstration HTML/CSS)');" action="" id="order-creation-form">
+                    <form method="POST" action="." onsubmit="event.preventDefault(); alert('Action enregistrée (mode démonstration HTML/CSS)');" action="" id="order-creation-form">
                         <input type="hidden" name="action" value="create_order">
                         
                         <div class="form-group">
                             <label for="client_id">Client Acheteur</label>
                             <div style="position: relative;">
                                 <select name="client_id" id="client-select" class="form-control" style="width: 100%; appearance: none; padding-right: 30px;" onchange="updateClientLimitInfo()">
-                                                                            <option value="6" data-limit="300000">
-                                            Cisse Awa (783332211)                                        </option>
-                                                                            <option value="4" data-limit="120000">
-                                            Diallo Maimouna (701122334)                                        </option>
-                                                                            <option value="2" data-limit="200000">
-                                            Diouf Fama (781234567)                                        </option>
-                                                                            <option value="10" data-limit="250000">
-                                            Fall Fatou (789998877)                                        </option>
-                                                                            <option value="7" data-limit="150000">
-                                            Faye Babacar (762221100)                                        </option>
-                                                                            <option value="9" data-limit="100000">
-                                            Gueye Ibrahima (778887766)                                        </option>
-                                                                            <option value="8" data-limit="400000">
-                                            Mbacke Khady (704443322)                                        </option>
-                                                                            <option value="1" data-limit="150000">
-                                            Ndiaye Abdou (776543210)                                        </option>
-                                                                            <option value="3" data-limit="250000">
-                                            Sarr Moussa (769876543)                                        </option>
-                                                                            <option value="5" data-limit="180000">
-                                            Sow Ousmane (775554433)                                        </option>
-                                                                    </select>
+                                    <?php 
+                                        $clients = $clients ?? [];
+                                        foreach ($clients as  $client):?>
+                                   <option value="6" data-limit="300000"> <?=$client['prenom'].' '.$client['nom']?> (<?=$client['tel']?>)  </option>
+                                   <?php endforeach?>
+                                 </select>
                                 <span style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-muted); font-size: 12px;">▼</span>
                             </div>
                             <span id="credit-limit-info" style="font-size:11px; color:var(--text-muted); font-weight:600; margin-top:4px; display:block;"></span>
@@ -1196,19 +1187,10 @@
                                 <div class="form-group" style="margin-bottom: 0;">
                                     <label for="pos-item-select" style="font-size: 10px;">Article</label>
                                     <select id="pos-item-select" class="form-control" style="background-color: #0b0f1a; color: white; padding: 10px; font-size: 12px;">
-                                                                                    <option value="2" data-price="8000" data-name="Bidon d&#039;huile 5L" data-stock="5">
-                                                🟡 Bidon d&#039;huile 5L (5)                                            </option>
-                                                                                    <option value="5" data-price="15000" data-name="Carton de lait" data-stock="40">
-                                                🟢 Carton de lait (40)                                            </option>
-                                                                                    <option value="3" data-price="12000" data-name="Carton de savon" data-stock="3">
-                                                🟡 Carton de savon (3)                                            </option>
-                                                                                    <option value="6" data-price="2000" data-name="Huile de palme 1L" data-stock="0">
-                                                🔴 Huile de palme 1L (0)                                            </option>
-                                                                                    <option value="4" data-price="1500" data-name="Paquet de sucre 1kg" data-stock="200">
-                                                🟢 Paquet de sucre 1kg (200)                                            </option>
-                                                                                    <option value="1" data-price="25000" data-name="Sac de riz 50kg" data-stock="100">
-                                                🟢 Sac de riz 50kg (100)                                            </option>
-                                                                            </select>
+                                         <option value="2" data-price="8000" data-name="Bidon d&#039;huile 5L" data-stock="5">
+                                            🟡 Bidon d&#039;huile 5L (5)                                           
+                                         </option>
+                                      </select>
                                 </div>
                                 <div class="form-group" style="margin-bottom: 0; position: relative;">
                                     <label for="pos-qty" style="font-size: 10px;">Qté</label>
@@ -1266,8 +1248,7 @@
                                  <label for="mode_reglement" style="font-size: 10px;">Règlement</label>
                                  <select name="mode_reglement" class="form-control" style="background-color: #0b0f1a; padding: 10px; font-size: 12px;">
                                      <option value="Wave">Wave</option>
-                                     <option value="Orange Money">OM</option>
-                                     <option value="Especes">Espèces</option>
+                                     
                                  </select>
                              </div>
                              <div class="form-group" style="margin-bottom: 0;">
@@ -1294,22 +1275,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                                                            <tr>
-                                    <td style="font-weight: 700; color: var(--text-muted);">#CMD-4</td>
+                            <?php 
+                                $allCommande = $allCommande ?? [];
+                                foreach ($allCommande as  $commande):?>
+                              <tr>
+                                 <td style="font-weight: 700; color: var(--text-muted);"><?=$commande['ref']?></td>
                                     <td style="font-weight: 700;">
-                                        Maimouna Diallo                                        <div style="font-size:11px; color:var(--text-muted); font-weight:normal;">Tél : 701122334</div>
+                                        <?=$commande['nomcomplet']?>                                        
+                                        <div style="font-size:11px; color:var(--text-muted); font-weight:normal;">Tél : <?=$commande['tel']?></div>
                                     </td>
-                                    <td style="font-weight: 800; color: var(--accent);">15 000 F</td>
+                                    <td style="font-weight: 800; color: var(--accent);"><?=$commande['montant_total']?> F</td>
                                     <td>
-                                                                                                                                    <span class="badge badge-danger">CRÉDIT TOTAL</span>
-                                                                                                                        </td>
+                                      <span class="badge badge-danger"><?=$commande['reglement']?></span>                                                                                   </td>
                                     <td>
-                                        <button class="btn-quick-action" onclick="toggleDetails('order-details-4')">Lignes</button>
+                                        <button class="btn-quick-action" onclick="toggleDetails('order-details-<?=$commande['id']?>')">Lignes</button>
                                     </td>
                                 </tr>
+                               
                                 <tr>
                                     <td colspan="5" style="padding: 0; border: none;">
-                                        <div class="details-drawer" id="order-details-4">
+                                        <div class="details-drawer" id="order-details-<?=$commande['id']?>">
                                             <div style="font-weight: 700; font-size: 12px; color: var(--accent); margin-bottom: 8px;">Détails Facture :</div>
                                             <table class="debt-table" style="font-size: 11px;">
                                                 <thead>
@@ -1321,150 +1306,22 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                                                                            <tr>
-                                                            <td>Paquet de sucre 1kg</td>
-                                                            <td>10</td>
-                                                            <td>1 500 F</td>
-                                                            <td style="font-weight: 700; color: var(--accent);">15 000 F</td>
+
+                                                    <?php foreach ($commande['lignes'] as  $ligne):?>
+                                                         <tr>
+                                                            <td><?= $ligne['libelle']?></td>
+                                                            <td><?= $ligne['quantite']?></td>
+                                                            <td><?= $ligne['prix_unitaire']?> F</td>
+                                                            <td style="font-weight: 700; color: var(--accent);"><?= $ligne['soustotal']?> F</td>
                                                         </tr>
-                                                                                                    </tbody>
+                                                    <?php endforeach?>    
+                                                 </tbody>
                                             </table>
                                         </div>
                                     </td>
                                 </tr>
-                                                            <tr>
-                                    <td style="font-weight: 700; color: var(--text-muted);">#CMD-3</td>
-                                    <td style="font-weight: 700;">
-                                        Moussa Sarr                                        <div style="font-size:11px; color:var(--text-muted); font-weight:normal;">Tél : 769876543</div>
-                                    </td>
-                                    <td style="font-weight: 800; color: var(--accent);">74 000 F</td>
-                                    <td>
-                                                                                                                                    <span class="badge badge-warning">AVANCE (Credit)</span>
-                                                                                                                        </td>
-                                    <td>
-                                        <button class="btn-quick-action" onclick="toggleDetails('order-details-3')">Lignes</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="5" style="padding: 0; border: none;">
-                                        <div class="details-drawer" id="order-details-3">
-                                            <div style="font-weight: 700; font-size: 12px; color: var(--accent); margin-bottom: 8px;">Détails Facture :</div>
-                                            <table class="debt-table" style="font-size: 11px;">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Produit</th>
-                                                        <th>Qté</th>
-                                                        <th>P.U.</th>
-                                                        <th>Sous-total</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                                                                            <tr>
-                                                            <td>Sac de riz 50kg</td>
-                                                            <td>2</td>
-                                                            <td>25 000 F</td>
-                                                            <td style="font-weight: 700; color: var(--accent);">50 000 F</td>
-                                                        </tr>
-                                                                                                            <tr>
-                                                            <td>Carton de savon</td>
-                                                            <td>2</td>
-                                                            <td>12 000 F</td>
-                                                            <td style="font-weight: 700; color: var(--accent);">24 000 F</td>
-                                                        </tr>
-                                                                                                    </tbody>
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
-                                                            <tr>
-                                    <td style="font-weight: 700; color: var(--text-muted);">#CMD-2</td>
-                                    <td style="font-weight: 700;">
-                                        Fama Diouf                                        <div style="font-size:11px; color:var(--text-muted); font-weight:normal;">Tél : 781234567</div>
-                                    </td>
-                                    <td style="font-weight: 800; color: var(--accent);">44 000 F</td>
-                                    <td>
-                                                                                                                                    <span class="badge badge-warning">AVANCE (Credit)</span>
-                                                                                                                        </td>
-                                    <td>
-                                        <button class="btn-quick-action" onclick="toggleDetails('order-details-2')">Lignes</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="5" style="padding: 0; border: none;">
-                                        <div class="details-drawer" id="order-details-2">
-                                            <div style="font-weight: 700; font-size: 12px; color: var(--accent); margin-bottom: 8px;">Détails Facture :</div>
-                                            <table class="debt-table" style="font-size: 11px;">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Produit</th>
-                                                        <th>Qté</th>
-                                                        <th>P.U.</th>
-                                                        <th>Sous-total</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                                                                            <tr>
-                                                            <td>Bidon d&#039;huile 5L</td>
-                                                            <td>3</td>
-                                                            <td>8 000 F</td>
-                                                            <td style="font-weight: 700; color: var(--accent);">24 000 F</td>
-                                                        </tr>
-                                                                                                            <tr>
-                                                            <td>Paquet de sucre 1kg</td>
-                                                            <td>13</td>
-                                                            <td>1 500 F</td>
-                                                            <td style="font-weight: 700; color: var(--accent);">19 500 F</td>
-                                                        </tr>
-                                                                                                    </tbody>
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
-                                                            <tr>
-                                    <td style="font-weight: 700; color: var(--text-muted);">#CMD-1</td>
-                                    <td style="font-weight: 700;">
-                                        Abdou Ndiaye                                        <div style="font-size:11px; color:var(--text-muted); font-weight:normal;">Tél : 776543210</div>
-                                    </td>
-                                    <td style="font-weight: 800; color: var(--accent);">58 000 F</td>
-                                    <td>
-                                                                                    <span class="badge badge-success">COMPTANT (Wave)</span>
-                                                                            </td>
-                                    <td>
-                                        <button class="btn-quick-action" onclick="toggleDetails('order-details-1')">Lignes</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="5" style="padding: 0; border: none;">
-                                        <div class="details-drawer" id="order-details-1">
-                                            <div style="font-weight: 700; font-size: 12px; color: var(--accent); margin-bottom: 8px;">Détails Facture :</div>
-                                            <table class="debt-table" style="font-size: 11px;">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Produit</th>
-                                                        <th>Qté</th>
-                                                        <th>P.U.</th>
-                                                        <th>Sous-total</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                                                                            <tr>
-                                                            <td>Sac de riz 50kg</td>
-                                                            <td>2</td>
-                                                            <td>25 000 F</td>
-                                                            <td style="font-weight: 700; color: var(--accent);">50 000 F</td>
-                                                        </tr>
-                                                                                                            <tr>
-                                                            <td>Bidon d&#039;huile 5L</td>
-                                                            <td>1</td>
-                                                            <td>8 000 F</td>
-                                                            <td style="font-weight: 700; color: var(--accent);">8 000 F</td>
-                                                        </tr>
-                                                                                                    </tbody>
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
-                                                    </tbody>
+                               <?php endforeach?>                             
+                          </tbody>
                     </table>
                 </div>
             </div>
@@ -2257,7 +2114,7 @@
                 <!-- Left: Form -->
                 <div class="panel-card" style="margin-bottom: 0;">
                     <div class="panel-title">Ajouter un Article</div>
-                    <form method="POST" action="/">
+                    <form method="POST" action="http://localhost:8000/showProduitTiers">
                         <div class="form-group">
                             <label for="nom">Nom de l'Article</label>
                             <input type="text" name="libelle" class="form-control" placeholder="Ex: Carton de savon" required>
@@ -2310,7 +2167,7 @@
                 <!-- Left: Form -->
                 <div class="panel-card" style="margin-bottom: 0;">
                     <div class="panel-title">Enregistrer un Client</div>
-                    <form method="POST" action="/" >
+                    <form method="POST" action="http://localhost:8000/showProduitTiers" >
                         <div class="form-row" style="display: flex; gap: 12px;">
                             <div class="form-group" style="flex: 1; margin-bottom: 0;">
                                 <label for="prenom">Prénom</label>
@@ -2368,7 +2225,7 @@
                 <!-- Left: Form -->
                 <div class="panel-card" style="margin-bottom: 0;">
                     <div class="panel-title">Enregistrer un Fournisseur</div>
-                    <form method="POST" action="/">
+                    <form method="POST" action="http://localhost:8000/showProduitTiers">
                         <div class="form-group">
                             <label for="nom">Nom de l'Entreprise</label>
                             <input type="text" name="nom" class="form-control" placeholder="Ex: Comptoir Céréalier Sénégalais" required>

@@ -2,34 +2,37 @@
 
 class Produit
 {
-    private ?int $id;
     private string $libelle;
     private float $prix_vente;
     private int $stock;
     private int $seuil;
+    private array $ligneCommandes;
+    private ?int $id;
 
     public function __construct(
-        ?int $id = null,
-        string $libelle = '',
-        float $prix_vente = 0,
+        string $libelle,
+        float $prix_vente,
+        int $seuil,
         int $stock = 0,
-        int $seuil = 5
+        ?int $id = null
     ) {
-        $this->id = $id;
         $this->libelle = $libelle;
         $this->prix_vente = $prix_vente;
         $this->stock = $stock;
         $this->seuil = $seuil;
+        $this->id = $id;
+        $this->ligneCommandes = [];
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getLibelle(): string
     {
         return $this->libelle;
+    }
+
+     public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getPrix_vente(): float
@@ -45,6 +48,16 @@ class Produit
     public function getSeuil(): int
     {
         return $this->seuil;
+    }
+
+     public function getLigneCommande(): array
+    {
+        return $this->ligneCommandes;
+    }
+
+    public function addLigneCommande(LigneCommande $ligneCommande): void
+    {
+         $this->ligneCommandes[] = $ligneCommande;
     }
 
 }

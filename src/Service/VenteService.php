@@ -1,37 +1,26 @@
 <?php
 
-require_once(dirname(__DIR__)."/Model/Repository/ClientRepository.php");
-require_once(dirname(__DIR__)."/Model/Repository/FournisseurRepository.php");
-require_once(dirname(__DIR__)."/Model/Repository/ProduitRepository.php");
 
 
-class essaie{
+class VenteService{
 
     private Database $db;
-    private ClientRepository $clientRepository;
-    private FournisseurRepository $fournisseurRepository;
     private ProduitRepository $produitRepository;
     private CommandeRepository $commandeRepository;
     private DetteRepository $detteRepository;
     private LigneCommandeRepository $ligneCommandeRepository;
 
     public function __construct(
-        ClientRepository $clientRepository,
-        FournisseurRepository $fournisseurRepository,
         ProduitRepository $produitRepository,
         CommandeRepository $commandeRepository,
         DetteRepository $detteRepository,
-        LigneCommandeRepository $ligneCommandeRepository,
-        
+        LigneCommandeRepository $ligneCommandeRepository
     ){
         $this->db = Database::getInstance();
         $this->produitRepository = $produitRepository;
-        $this->clientRepository = $clientRepository;
-        $this->fournisseurRepository = $fournisseurRepository;
         $this->commandeRepository = $commandeRepository;
         $this->detteRepository = $detteRepository;
         $this->ligneCommandeRepository = $ligneCommandeRepository;
-       
     }
     public function enregistrerVente(
             int $client_id,float $limit_credit,
@@ -62,18 +51,13 @@ class essaie{
         $sommeDette = $this->detteRepository->getAlldetteByIdClient($client_id);
         $nouvelleSommeDette = $sommeDette + $montantRestant;
 
-
-
-    $est_credit = true;
-
-
         if($nouvelleSommeDette > $limit_credit){
-            $errors['limit_atteint'] =  "Vous avez atteint votre limite de credit";
-            $est_credit = false;
-
+            $errors['limit_atteint'] = "Vous avez atteint votre limite de credit";
         }
+    }
 
-        foreach ($panier as $ligne) {
+    // Validation du stock pour tous les produits
+    foreach ($panier as $ligne) {
         $produit = $this->produitRepository->getStockProduitId($ligne->getProduitId());
 
         if ($produit === null) {
@@ -127,13 +111,6 @@ class essaie{
         $pdo->rollback();
     }
      throw $th;
-    return false;
-   }  
-            
-    
-    
-
-
-    }
-   }
-   }
+    }  
+}
+}

@@ -2,41 +2,47 @@
 
 class Commande
 {
-    private ?int $id;
-    private ?DateTime $date_commande;
+    private DateTime $date_commande;
     private float $montant_total;
-    private float $montant_paye;
     private bool $est_credit;
-    private int $client_id;
-    private int $mode_paiement_id;
-    private int $utilisateur_id;
+    private float $montant_paye;    
+    private ?int $id;
+    private array $dettes;
+    private array $ligneCommandes;
+    private Client $client;
+    private ModePaiement $modePaiement;
+    private Utilisateur $utilisateur;
 
     public function __construct(
+        Client $client,
+        ModePaiement $modePaiement,
+        Utilisateur $utilisateur,
         ?int $id = null,
-        ?string $date_commande = null,
         float $montant_total = 0,
         float $montant_paye = 0,
-        bool $est_credit = false,
-        int $client_id = 0,
-        int $mode_paiement_id = 0,
-        int $utilisateur_id = 0
+        bool $est_credit = false
+       
     ) {
-        $this->id = $id;
-        $this->date_commande = $date_commande;
+        $this->date_commande = new DateTime();
         $this->montant_total = $montant_total;
+        $this->id = $id;
         $this->montant_paye = $montant_paye;
         $this->est_credit = $est_credit;
-        $this->client_id = $client_id;
-        $this->mode_paiement_id = $mode_paiement_id;
-        $this->utilisateur_id = $utilisateur_id;
+        $this->client = $client;
+        $this->modePaiement = $modePaiement;
+        $this->utilisateur = $utilisateur;
+        $this->dettes = [];
+        $this->ligneCommandes = [];
     }
+
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDate_commande(): ?string
+     public function getDate_commande(): DateTime
     {
         return $this->date_commande;
     }
@@ -56,19 +62,39 @@ class Commande
         return $this->est_credit;
     }
 
-    public function getClient_id(): int
+    public function getClient(): Client
     {
-        return $this->client_id;
+        return $this->client;
     }
 
-    public function getMode_paiement_id(): int
+    public function getMode_paiement(): ModePaiement
     {
-        return $this->mode_paiement_id;
+        return $this->mode_paiement;
     }
 
-    public function getUtilisateur_id(): int
+    public function getUtilisateur(): Utilisateur
     {
-        return $this->utilisateur_id;
+        return $this->utilisateur;
+    }
+
+    public function getDettes(): array
+    {
+        return $this->dettes;
+    }
+
+    public function addDette(Dette $dette): void
+    {
+         $this->dettes[] = $dette;
+    }
+
+     public function getLignesCommande(): array
+    {
+        return $this->ligneCommandes;
+    }
+
+    public function addLigneCommande(LigneCommande $ligneCommande): void
+    {
+         $this->ligneCommandes[] = $ligneCommande;
     }
 
 }

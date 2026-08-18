@@ -1,44 +1,39 @@
 <?php
 
+require_once(dirname(__DIR__)."/src/Model/Entity/Fournisseur.php");
 class Approvisionnement
 {
-    private ?int $id;
     private string $ref_bl;
-    private ?string $date_appro;
+    private DateTime $date_appro;
     private float $montant_total;
-    private int $fournisseur_id;
-    private int $statut_appro_id;
-    private int $utilisateur_id;
+    private Fournisseur $fournisseur;
+    private Statut $statut;
+    private Utilisateur $utilisateur;
+    private array $ligneAppros;
 
     public function __construct(
-        ?int $id = null,
-        string $ref_bl = '',
-        ?string $date_appro = null,
-        float $montant_total = 0,
-        int $fournisseur_id = 0,
-        int $statut_appro_id = 0,
-        int $utilisateur_id = 0
+        Fournisseur $fournisseur,
+        Statut $statut,
+        string $ref_bl,
+        Utilisateur $utilisateur,
+        float $montant_total
     ) {
-        $this->id = $id;
         $this->ref_bl = $ref_bl;
-        $this->date_appro = $date_appro;
+        $this->date_appro = new DateTime();
         $this->montant_total = $montant_total;
-        $this->fournisseur_id = $fournisseur_id;
-        $this->statut_appro_id = $statut_appro_id;
-        $this->utilisateur_id = $utilisateur_id;
+        $this->fournisseur = $fournisseur;
+        $this->statut = $statut;
+        $this->utilisateur = $utilisateur;
+        $this->ligneAppros = [];
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getRef_bl(): string
     {
         return $this->ref_bl;
     }
 
-    public function getDate_appro(): ?string
+    public function getDateAppro(): DateTime
     {
         return $this->date_appro;
     }
@@ -48,18 +43,27 @@ class Approvisionnement
         return $this->montant_total;
     }
 
-    public function getFournisseur_id(): int
+    public function getFournisseur(): Fournisseur
     {
-        return $this->fournisseur_id;
+        return $this->fournisseur;
     }
 
-    public function getStatut_appro_id(): int
+    public function getStatut(): Statut
     {
-        return $this->statut_appro_id;
+        return $this->statut;
     }
 
-    public function getUtilisateur_id(): int
+    public function getUtilisateur(): Utilisateur
     {
-        return $this->utilisateur_id;
+        return $this->utilisateur;
+    }
+    public function getLignes(): array
+    {
+        return $this->ligneAppros;
+    }
+
+    public function addLignes(LigneAppro $ligneAppro): void
+    {
+         $this->ligneAppros[] = $ligneAppro;
     }
 }

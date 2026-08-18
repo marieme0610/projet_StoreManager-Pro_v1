@@ -12,7 +12,7 @@ class FournisseurRepository
         $this->db = Database::getInstance();
     }
 
-    public function getAllFournisseur():array{
+    public function getAllFournisseurs():array{
         $sql = "SELECT * FROM fournisseurs";
 
         $query = $this->db->executeQuery( $sql, [], false);
@@ -35,16 +35,16 @@ class FournisseurRepository
         );
     }
 
-    public function saveFournisseur(Fournisseur $fournisseur):int{
+    public function saveFournisseur(array $fournisseur):int{
 
         $sql = "INSERT INTO fournisseurs(nom,email,tel,adresse)
                 VALUES(:nom,:email,:tel,:adresse)";
 
         $result = $this->db->executeUpdate($sql, [
-            'nom'=>$fournisseur->getNom(),
-            'email'=>$fournisseur->getEmail(),
-            'tel'=>$fournisseur->getTel(),
-            'adresse'=>$fournisseur->getAdresse()
+            'nom'=>$fournisseur['nom'],
+            'email'=>$fournisseur['email'],
+            'tel'=>$fournisseur['tel'],
+            'adresse'=>$fournisseur['adresse']
         ]);
         return $result;
     }

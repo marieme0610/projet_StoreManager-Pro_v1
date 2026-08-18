@@ -104,3 +104,7 @@ j'ai encore rencontrer beaucoup de bug mais j'en est beaucoup appris egalemnt qu
 Plusieurs bugs d'inattention lors de la réécriture : variables PHP oubliées sans $ (client_id au lieu de $client_id), mauvaise variable SQL réutilisée par copier-coller ($sql au lieu de $sql1/$sql2), appel d'une méthode de Repository sans passer par l'attribut injecté ($this->getStockProduitId() au lieu de $this->produitRepository->getStockProduitId()).
 Erreur de validation qui ne bloquait pas l'exécution : je remplissais un tableau $errors mais je ne testais jamais son contenu avant de continuer.
 j'ai appri  l'injection de dépendances : je créais mes Repositories directement avec new à l'intérieur du Service, plutôt que de les recevoir en paramètre du constructeur — ce qui rendait le Service rigide et impossible à faire évoluer sans le modifier.
+
+#### 📌 Step 2.4 (17h00 - 20h00) : Controller POS & Vue Caisse
+
+J'ai implémenté POSController avec ses méthodes show() et store(), ainsi que la vue POS correspondante. J'ai mis en place le routage complet via Router.php et index.php, qui centralise la création de toutes les dépendances et les associe aux bonnes actions du contrôleur.

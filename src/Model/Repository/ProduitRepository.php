@@ -12,7 +12,7 @@ class ProduitRepository
         $this->db = Database::getInstance();
     }
 
-    public function getAllProduit(): array
+    public function getAllProduits(): array
     {
         $sql = "SELECT id, libelle, prix_vente, stock, seuil FROM produits";
         $query = $this->db->query($sql, false); 
@@ -24,18 +24,17 @@ class ProduitRepository
         return $produits;
     }
 
-    public function saveProduit(Produit $newProduit): int
+    public function saveProduit(array $newProduit): int
     {
         $sql = "
-            INSERT INTO produits (libelle, prix_vente, stock, seuil)
-            VALUES (:libelle, :prix_vente, :stock, :seuil)
+            INSERT INTO produits (libelle, prix_vente, stock)
+            VALUES (:libelle, :prix_vente, :stock)
         ";
 
         return $this->db->executeUpdate($sql, [
-            'libelle'    => $newProduit->getLibelle(),
-            'prix_vente' => $newProduit->getPrixVente(),
-            'stock'      => $newProduit->getStock(),
-            'seuil'      => $newProduit->getSeuil()
+            'libelle'    => $newProduit['libelle'],
+            'prix_vente' => $newProduit['prix_vente'],
+            'stock'      => $newProduit['stock']
         ]);
     }
 
@@ -58,7 +57,8 @@ class ProduitRepository
                 FROM produits p";
 
         $datas = $this->db->query($sql);
-        return $datas['totalValeurStock'];
+        // var_dump($datas['totalvaleurstock']); die;
+        return $datas['totalvaleurstock'];
     }
 
     public function getNbrProduit():int{

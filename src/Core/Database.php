@@ -17,7 +17,7 @@ class Database
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC 
             ]);
         } catch (PDOException $e) {
-            $sqlitePath = dirname(__DIR__, 2) . "/database/erp.db";
+            $sqlitePath = dirname(__DIR__, 2) . "/schemaSql/erp.db";
             $this->pdo = new PDO("sqlite:" . $sqlitePath, null, null, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC

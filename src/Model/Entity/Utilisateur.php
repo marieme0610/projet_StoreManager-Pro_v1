@@ -6,23 +6,27 @@ class Utilisateur
     private string $nom_complet;
     private string $email;
     private string $mot_passe;
-    private ?string $tel;
-    private int $role_id;
+    private string $tel;
+    private Role $role;
+    private array $commandes;
+
 
     public function __construct(
+        string $nomComplet,
+        string $email,
+        string $password,
+        string $tel,
+        Role $role ,
         ?int $id = null,
-        string $nom_complet = '',
-        string $email = '',
-        string $mot_passe = '',
-        ?string $tel = null,
-        int $role_id = 0
     ) {
         $this->id = $id;
-        $this->nom_complet = $nom_complet;
+        $this->nom_complet = $nomComplet;
         $this->email = $email;
-        $this->mot_passe = $mot_passe;
+        $this->mot_passe = $password;
         $this->tel = $tel;
-        $this->role_id = $role_id;
+        $this->role = $role;
+        $this->commandes = [];
+
     }
 
     public function getId(): ?int
@@ -30,7 +34,7 @@ class Utilisateur
         return $this->id;
     }
 
-    public function getNom_complet(): string
+    public function getNomComplet(): string
     {
         return $this->nom_complet;
     }
@@ -40,19 +44,29 @@ class Utilisateur
         return $this->email;
     }
 
-    public function getMot_passe(): string
+    public function getPassword(): string
     {
         return $this->mot_passe;
     }
 
-    public function getTel(): ?string
+    public function getTel(): string
     {
         return $this->tel;
     }
 
-    public function getRole_id(): int
+    public function getRole(): Role
     {
-        return $this->role_id;
+        return $this->role;
+    }
+
+      public function getCommandes(): array
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): void
+    {
+         $this->commandes[]= $commande;
     }
 
 }

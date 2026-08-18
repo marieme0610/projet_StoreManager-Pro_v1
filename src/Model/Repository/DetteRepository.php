@@ -30,4 +30,10 @@ class DetteRepository{
                          ]);
             return $lastIdDette;
    }
+
+   public function getTotalDetteActif(){
+        $sql = "SELECT COALESCE(SUM(d.montant_restant),0) AS detteactif FROM dettes d";
+        $totalDette = $this->db->executeQuery($sql, []);
+        return $totalDette['detteactif'];
+   }
 }

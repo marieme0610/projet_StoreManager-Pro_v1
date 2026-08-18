@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__DIR__,2)."/src/Core/Database.php");
+require_once(dirname(__DIR__,2)."/Core/Database.php");
 require_once(dirname(__DIR__) . "/Entity/Client.php");
 
 
@@ -12,7 +12,7 @@ class ClientRepository
     $this->db = Database::getInstance();
    }
 
-   public function getAllClient():array{
+   public function getAllClients():array{
 
       $sql = "SELECT * FROM clients" ;
 
@@ -42,7 +42,7 @@ class ClientRepository
         );
    }
 
-   public function getNbrClient():int{
+   public function getNbrClients():int{
 
         $sql = "SELECT COUNT(c.id) AS nbrclient FROM clients c";
         // var_dump($sql);die;
@@ -51,19 +51,20 @@ class ClientRepository
         return $datas['nbrclient'];
    }
 
-   public function saveClient(Client $newClient):int{
+   public function saveClient(array $newClient):int{
         $sql = "INSERT INTO clients(nom,prenom,email,tel,limite_credit)
                 VALUES(:nom,:prenom,:email,:tel,:limite_credit)";
 
         $result = $this->db->executeUpdate( $sql, [
-                'nom'=>$newClient->getNom(),
-                'prenom'=>$newClient->getPrenom(),
-                'email'=>$newClient->getEmail(),
-                'tel'=>$newClient->getTel(),
-                'limite_credit'=>$newClient->getLimite_credit()
+                'nom'=>$newClient['nom'],
+                'prenom'=>$newClient['prenom'],
+                'email'=>$newClient['email'],
+                'tel'=>$newClient['tel'],
+                'limite_credit'=>$newClient['limite_credit']
         ]);
         return $result;     
    }
+   
 
  
 

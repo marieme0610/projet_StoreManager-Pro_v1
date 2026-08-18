@@ -2,29 +2,21 @@
 
 class LigneCommande
 {
-    private ?int $id;
     private int $quantite;
     private float $prix_unitaire;
-    private int $commande_id;
-    private int $produit_id;
+    private Commande $commande;
+    private Produit $produit;
 
     public function __construct(
-        ?int $id = null,
-        int $quantite = 0,
-        float $prix_unitaire = 0,
-        int $commande_id = 0,
-        int $produit_id = 0
+        Commande $commande ,
+        Produit $produit,
+        int $quantite,
+        float $prix_unitaire
     ) {
-        $this->id = $id;
         $this->quantite = $quantite;
         $this->prix_unitaire = $prix_unitaire;
-        $this->commande_id = $commande_id;
-        $this->produit_id = $produit_id;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
+        $this->commande = $commande;
+        $this->produit = $produit;
     }
 
     public function getQuantite(): int
@@ -37,14 +29,14 @@ class LigneCommande
         return $this->prix_unitaire;
     }
 
-    public function getCommande_id(): int
+    public function getCommande(): Commande
     {
-        return $this->commande_id;
+        return $this->commande;
     }
 
-    public function getProduit_id(): int
+    public function getProduit(): Produit
     {
-        return $this->produit_id;
+        return $this->produit;
     }
 
 }

@@ -43,3 +43,25 @@ INSERT INTO modes_paiement (libelle) VALUES
 ('Carte Bancaire'),
 ('Virement'),
 ('Chèque');
+
+
+SELECT COALESCE(SUM(montant_paye),0 )FROM commandes WHERE montant_total = montant_paye;
+
+SELECT COALESCE(SUM(d.montant_restant),0) FROM dettes d;
+
+SELECT COUNT(id) FROM commandes WHERE montant_total = montant_paye;
+
+SELECT concat('#CMD-',c.id) AS ref, concat(cl.prenom,' ',cl.nom) AS nomcomplet,
+c.montant_total ,CASE 
+    WHEN c.montant_paye = montant_total THEN  'COMPTANT (' || mo.libelle || ' )'
+    WHEN c.montant_paye > 0 THEN 'AVANCE (' || mo.libelle || ' )'
+    ELSE  'CREDIT TOTAL'
+END AS reglement
+ FROM
+commandes c INNER JOIN clients cl ON c.client_id = cl.id INNER JOIN modes_paiement 
+mo ON mo.id = c.mode_paiement_id GROUP BY cl.id,c.id,mo.id;
+
+
+SELECT p.libelle,p.prix_unitaire,l.quantite,(COALESCE(l.prix_unitaire,0) * COALESCE(l.quantite,0)) AS soustotal
+FROM ligneCommandes l INNER JOIN produits p ON p.id = l.produit_id WHERE l.commande_id = 1;
+ 
